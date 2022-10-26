@@ -12,22 +12,30 @@ refs.stopBtn.toggleAttribute('disabled');
 
 function onStartBtnClick(){
 
-    refs.startBtn.toggleAttribute('disabled');
-    refs.stopBtn.toggleAttribute('disabled');
+    colorSwitcher()
+
+    buttonToggler()
 
     intervalId = setInterval(() => {
-        const color = getRandomHexColor()
-        refs.body.style.backgroundColor = color;
+        colorSwitcher()
     }, chngBgColorInterval);
 };
 
 function onStopBtnClick(){
     clearInterval(intervalId);
-
-    refs.startBtn.toggleAttribute('disabled');
-    refs.stopBtn.toggleAttribute('disabled');
+    buttonToggler()
 };
 
 function getRandomHexColor() {
   return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
-}
+};
+
+function colorSwitcher(){
+    const color = getRandomHexColor()
+    refs.body.style.backgroundColor = color;
+};
+
+function buttonToggler(){
+    refs.startBtn.toggleAttribute('disabled');
+    refs.stopBtn.toggleAttribute('disabled');
+};
