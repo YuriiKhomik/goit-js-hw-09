@@ -12,15 +12,14 @@ const options = {
   onClose(selectedDates) {
     let selectedUnixTime = selectedDates[0].getTime();
     let currentUnixTime = Date.now();
-    const timeLeft = selectedUnixTime - currentUnixTime;
+    const timeLeft = convertMs(selectedUnixTime - currentUnixTime);
 
     if(selectedUnixTime <= currentUnixTime){
         Notify.failure('Please choose a date in the future');
     }else{
         refs.startBtn.toggleAttribute('disabled');
-        console.log(convertMs(timeLeft));
-        
-        
+        console.log(timeLeft)
+        updateClockFace(timeLeft)
     };
   },
 };
@@ -40,7 +39,15 @@ const fp =  flatpickr(refs.input, options);
 
 refs.startBtn.toggleAttribute('disabled');
 
-console.log()
+
+function updateClockFace({days, hours, minutes, seconds }) {
+    refs.days.textContent = `${days}`;
+    refs.hours.textContent = `${hours}`;
+    refs.minutes.textContent = `${minutes}`;
+    refs.seconds.textContent = `${seconds}`;
+};
+
+
 
 function convertMs(ms) {
   // Number of milliseconds per unit of time
