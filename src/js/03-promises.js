@@ -17,30 +17,33 @@ function onFormInput(e){};
 
 function onFormSubmit(e){
   e.preventDefault();
-  const inputDelay = refs.delay.value;
+  let inputDelay = refs.delay.value;
   const inputStep = refs.step.value;
   const inputAmount = refs.amount.value;
   let intervalCounter = 0;
 
   const intervalId = setInterval(() => {
     intervalCounter += 1;
-    // let delay =  inputDelay + inputStep;
+    inputDelay += inputStep;
+    
     if(intervalCounter >= inputAmount){
       clearInterval(intervalId);
     }
 
+    createPromise({intervalCounter, inputDelay})
     
-    // createPromise(intervalId, inputDelay);
-  
-
   }, inputDelay);
 };
 
-function createPromise(position, delay) {
+function createPromise({intervalCounter, inputDelay}) {
   const shouldResolve = Math.random() > 0.3;
   if (shouldResolve) {
-    // Fulfill
+    // Notify.success(`✅ Fulfilled promise ${intervalCounter} in ${inputDelay}ms`);
+    console.log(`✅ Fulfilled promise ${intervalCounter} in ${inputDelay}ms`);
   } else {
-    // Reject
+    // Notify.failure('`❌ Rejected promise ${intervalCounter} in ${inputDelay}ms`');
+    console.log(`❌ Rejected promise ${intervalCounter} in ${inputDelay}ms`)
   }
-}
+};
+
+
