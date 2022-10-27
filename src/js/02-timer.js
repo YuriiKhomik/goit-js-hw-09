@@ -3,29 +3,6 @@ import "flatpickr/dist/flatpickr.min.css";
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 
-
-const options = {
-  enableTime: true,
-  time_24hr: true,
-  defaultDate: new Date(),
-  minuteIncrement: 1,
-  onClose(selectedDates) {
-    let selectedUnixTime = selectedDates[0].getTime();
-    let currentUnixTime = Date.now();
-    const timeLeft = convertMs(selectedUnixTime - currentUnixTime);
-
-    if(selectedUnixTime <= currentUnixTime){
-        Notify.failure('Please choose a date in the future');
-    }else{
-        refs.startBtn.toggleAttribute('disabled');
-        console.log(timeLeft)
-        updateClockFace(timeLeft)
-    };
-  },
-};
-
-
-
 const refs = {
     input: document.querySelector('#datetime-picker'),
     startBtn: document.querySelector('button[data-start]'),
@@ -35,9 +12,80 @@ const refs = {
     seconds: document.querySelector('span[data-seconds]'),
 };
 
-const fp =  flatpickr(refs.input, options);
+let selectedTime = 0;
+
 
 refs.startBtn.toggleAttribute('disabled');
+
+const options = {
+  enableTime: true,
+  time_24hr: true,
+  defaultDate: new Date(),
+  minuteIncrement: 1,
+  onClose(selectedDates) {
+    let selectedUnixTime = selectedDates[0].getTime();
+    let currentUnixTime = Date.now();
+
+    if(selectedUnixTime <= currentUnixTime){
+        Notify.failure('Please choose a date in the future');
+    }else{
+        refs.startBtn.toggleAttribute('disabled');
+        refs.startBtn.addEventListener('click', onStartBtnClick)
+        selectedTime = selectedUnixTime
+    };
+  },
+};
+
+flatpickr(refs.input, options);
+
+// function onStartBtnClick(){
+//     refs.startBtn.toggleAttribute('disabled');
+//     let timerId = 0;
+    
+  
+//     setInterval(()=>{
+//         const deltaTime = selectedTime - Date.now();
+//         if(deltaTime <= 0){
+//             clearInterval(timerId);
+//             Notify.success('Timer done!!');
+//             return;
+//         }else{
+//             const timeLeft = convertMs(deltaTime);
+//             updateClockFace(timeLeft);
+//             console.log(timeLeft);
+//         }
+//     }, 1000)
+// };
+
+function onStartBtnClick(){
+    timer();
+    refs.startBtn.toggleAttribute('disabled');
+    refs.input.toggleAttribute('disabled');
+
+    const timerId = setInterval(()=>{
+        timer(timerId);
+    }, 1000)
+};
+
+function timer(timerId){
+    const deltaTime = selectedTime - Date.now();
+    if(deltaTime <= 0){
+        clearInterval(timerId);
+        Notify.success('Timer done!!');
+    }else{
+        const timeLeft = convertMs(deltaTime);
+        updateClockFace(timeLeft);
+        // console.log(timeLeft);
+    };
+};
+
+
+
+
+
+
+
+
 
 
 function updateClockFace({days, hours, minutes, seconds }) {
